@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🌸 Jogo da Memória Fofinho - 80 Cartas</title>
+  <title>🌸 Jogo da Memória com Níveis</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -13,16 +13,22 @@
     }
 
     body {
-      font-family: 'Quicksand', sans-serif;
+      font-family: 'Quicksand', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
       background: linear-gradient(135deg, #ffd1dc 0%, #ffc8dd 25%, #bde0fe 60%, #a2d2ff 100%);
       background-attachment: fixed;
       min-height: 100vh;
       padding: 20px;
       position: relative;
       overflow-x: hidden;
+      transition: background 0.8s ease;
     }
 
-    /* Nuvens decorativas de fundo */
+    body.nivel-1 { background: linear-gradient(135deg, #ffe0ec, #ffc8dd, #ffb3d1); }
+    body.nivel-2 { background: linear-gradient(135deg, #e0f0ff, #bde0fe, #a2d2ff); }
+    body.nivel-3 { background: linear-gradient(135deg, #e8ffe0, #c8f0c8, #a2e8a2); }
+    body.nivel-4 { background: linear-gradient(135deg, #fff0d0, #ffe0a2, #ffc966); }
+    body.nivel-5 { background: linear-gradient(135deg, #f0e0ff, #d8b8ff, #b088ff); }
+
     body::before,
     body::after {
       content: "";
@@ -33,16 +39,9 @@
       pointer-events: none;
       z-index: 0;
     }
-    body::before {
-      width: 400px; height: 400px;
-      top: -100px; left: -100px;
-    }
-    body::after {
-      width: 500px; height: 500px;
-      bottom: -150px; right: -150px;
-    }
+    body::before { width: 400px; height: 400px; top: -100px; left: -100px; }
+    body::after  { width: 500px; height: 500px; bottom: -150px; right: -150px; }
 
-    /* Corações flutuantes */
     .coracao {
       position: fixed;
       font-size: 1.5rem;
@@ -50,6 +49,7 @@
       pointer-events: none;
       animation: flutuar 6s ease-in-out infinite;
       z-index: 1;
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
     }
     @keyframes flutuar {
       0%, 100% { transform: translateY(0) rotate(0deg); }
@@ -72,15 +72,15 @@
       color: transparent;
       text-shadow: 3px 3px 0 rgba(255,255,255,0.7);
       margin-bottom: 4px;
-      font-size: 2.8rem;
+      font-size: 2.6rem;
       text-align: center;
       letter-spacing: 1px;
     }
 
     .subtitulo {
       color: #b0508b;
-      margin-bottom: 22px;
-      font-size: 1.1rem;
+      margin-bottom: 18px;
+      font-size: 1rem;
       font-weight: 700;
       text-align: center;
       background: rgba(255,255,255,0.6);
@@ -90,10 +90,73 @@
       border: 2px dashed #ffb3d1;
     }
 
+    .barra-niveis {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nivel-badge {
+      font-family: 'Fredoka', sans-serif;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: 3px solid #fff;
+      background: rgba(255,255,255,0.5);
+      color: #a03d6e;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      cursor: default;
+    }
+
+    .nivel-badge.atual {
+      background: linear-gradient(135deg, #ff6fa5, #c58bf2);
+      color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(197, 139, 242, 0.5);
+      animation: pulinho 1.5s ease-in-out infinite;
+    }
+    @keyframes pulinho {
+      0%, 100% { transform: scale(1.1); }
+      50%      { transform: scale(1.15); }
+    }
+
+    .nivel-badge.completo {
+      background: linear-gradient(135deg, #7fd88f, #4acfa0);
+      color: #fff;
+    }
+
+    .nivel-badge.completo::after {
+      content: "✓";
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #fff;
+      color: #4acfa0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 900;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .nivel-badge.bloqueado {
+      opacity: 0.45;
+      filter: grayscale(0.6);
+    }
+
     .painel {
       display: flex;
-      gap: 14px;
-      margin-bottom: 24px;
+      gap: 12px;
+      margin-bottom: 22px;
       flex-wrap: wrap;
       justify-content: center;
       position: sticky;
@@ -110,29 +173,27 @@
     .info {
       background: linear-gradient(135deg, #ffd1e6, #ffb3d9);
       color: #a03d6e;
-      padding: 9px 22px;
+      padding: 9px 20px;
       border-radius: 30px;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.95rem;
       border: 2px solid #fff;
       box-shadow: 0 4px 12px rgba(255, 111, 165, 0.25);
       white-space: nowrap;
       font-family: 'Fredoka', sans-serif;
     }
 
-    .info span {
-      color: #d6336c;
-    }
+    .info span { color: #d6336c; }
 
     button {
       font-family: 'Fredoka', sans-serif;
       background: linear-gradient(135deg, #ffd166, #ffb703);
       color: #7a4a00;
       border: 2px solid #fff;
-      padding: 9px 24px;
+      padding: 9px 22px;
       border-radius: 30px;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: all 0.25s ease;
       box-shadow: 0 5px 15px rgba(255, 183, 3, 0.4);
@@ -142,22 +203,35 @@
     button:hover {
       transform: translateY(-3px) scale(1.05);
       box-shadow: 0 8px 22px rgba(255, 183, 3, 0.6);
-      background: linear-gradient(135deg, #ffe08a, #ffc233);
     }
 
-    button:active {
-      transform: scale(0.97);
+    button:active { transform: scale(0.97); }
+
+    button.roxo {
+      background: linear-gradient(135deg, #c58bf2, #9b5de5);
+      color: #fff;
+      box-shadow: 0 5px 15px rgba(155, 93, 229, 0.4);
     }
 
-    /* Tabuleiro com cartas grandes: 10 colunas, cartas maiores */
+    button.roxo:hover {
+      box-shadow: 0 8px 22px rgba(155, 93, 229, 0.6);
+    }
+
     .tabuleiro {
       display: grid;
-      grid-template-columns: repeat(10, 1fr);
       gap: 12px;
-      max-width: 1400px;
       width: 100%;
+      max-width: 1400px;
       perspective: 1200px;
+      margin: 0 auto;
+      justify-content: center;
     }
+
+    .tabuleiro.nivel-1 { grid-template-columns: repeat(6, minmax(0, 150px)); }
+    .tabuleiro.nivel-2 { grid-template-columns: repeat(6, minmax(0, 140px)); }
+    .tabuleiro.nivel-3 { grid-template-columns: repeat(8, minmax(0, 130px)); }
+    .tabuleiro.nivel-4 { grid-template-columns: repeat(10, minmax(0, 120px)); }
+    .tabuleiro.nivel-5 { grid-template-columns: repeat(10, minmax(0, 115px)); }
 
     .carta {
       aspect-ratio: 1 / 1;
@@ -174,9 +248,7 @@
       box-shadow: 0 10px 22px rgba(197, 139, 242, 0.4);
     }
 
-    .carta.virada {
-      transform: rotateY(180deg);
-    }
+    .carta.virada { transform: rotateY(180deg); }
 
     .carta .face {
       position: absolute;
@@ -187,23 +259,24 @@
       justify-content: center;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      font-size: 2.4rem;
+      /* Fontes de emoji garantidas em todos os sistemas */
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji',
+                   'EmojiOne Color', 'Android Emoji', 'Segoe UI Symbol', sans-serif;
+      font-size: 2.6rem;
+      line-height: 1;
       user-select: none;
+      text-align: center;
     }
 
-    /* FRENTE — colorida com degradê */
     .carta .frente {
       transform: rotateY(180deg);
       border: 3px solid #fff;
       background: linear-gradient(145deg, var(--cor-clara), var(--cor));
-      box-shadow:
-        inset 0 0 20px rgba(255,255,255,0.5),
-        0 0 0 3px rgba(255,255,255,0.4);
+      box-shadow: inset 0 0 20px rgba(255,255,255,0.5), 0 0 0 3px rgba(255,255,255,0.4);
       position: relative;
       overflow: hidden;
     }
 
-    /* Brilhinho no canto */
     .carta .frente::before {
       content: "✨";
       position: absolute;
@@ -218,7 +291,6 @@
       50%      { opacity: 1; transform: scale(1.2); }
     }
 
-    /* VERSO — fofinho com padrão */
     .carta .verso {
       background:
         radial-gradient(circle at 25% 25%, rgba(255,255,255,0.25) 0%, transparent 40%),
@@ -231,6 +303,7 @@
 
     .carta .verso::after {
       content: "🐾";
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
       font-size: 1.8rem;
       opacity: 0.9;
       filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
@@ -243,20 +316,15 @@
 
     .carta.encontrada .frente {
       border: 4px solid #fff;
-      box-shadow:
-        0 0 25px rgba(255,255,255,1),
-        0 0 40px var(--cor),
-        inset 0 0 25px rgba(255,255,255,0.8);
+      box-shadow: 0 0 25px rgba(255,255,255,1), 0 0 40px var(--cor), inset 0 0 25px rgba(255,255,255,0.8);
       animation: pulse 0.8s ease;
     }
 
-    .carta.encontrada {
-      cursor: default;
-    }
+    .carta.encontrada { cursor: default; }
 
-    /* Coraçãozinho ao encontrar par */
     .carta.encontrada::after {
       content: "💖";
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
       position: absolute;
       top: -8px;
       right: -8px;
@@ -276,27 +344,54 @@
       100% { transform: rotateY(180deg) scale(1); }
     }
 
-    .tabuleiro.bloqueado .carta:not(.encontrada) {
-      pointer-events: none;
+    .tabuleiro.bloqueado .carta:not(.encontrada) { pointer-events: none; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(60, 20, 80, 0.5);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+      animation: aparecer 0.4s ease;
     }
 
-    /* Tela de vitória fofinha */
-    .vitoria {
+    .modal-conteudo {
       text-align: center;
-      color: #a03d6e;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(12px);
-      padding: 35px 50px;
+      background: #fff;
+      padding: 40px 50px;
       border-radius: 32px;
-      border: 4px dashed #ffb3d1;
-      margin-top: 30px;
-      box-shadow: 0 15px 40px rgba(197, 139, 242, 0.4);
-      animation: aparecer 0.6s ease;
+      border: 5px dashed #ffb3d1;
+      box-shadow: 0 20px 60px rgba(197, 139, 242, 0.5);
+      max-width: 480px;
+      width: 100%;
+      animation: bounce-in 0.5s ease;
     }
 
-    .vitoria h2 {
+    @keyframes bounce-in {
+      0%   { transform: scale(0.5); opacity: 0; }
+      60%  { transform: scale(1.08); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    .modal-emoji {
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+      font-size: 4rem;
+      margin-bottom: 10px;
+      display: block;
+      animation: girar 1.5s ease-in-out infinite;
+    }
+    @keyframes girar {
+      0%, 100% { transform: rotate(-10deg); }
+      50%      { transform: rotate(10deg); }
+    }
+
+    .modal h2 {
       font-family: 'Fredoka', sans-serif;
-      font-size: 2.2rem;
+      font-size: 2rem;
       margin-bottom: 10px;
       background: linear-gradient(90deg, #ff6fa5, #c58bf2, #7cb3ff);
       -webkit-background-clip: text;
@@ -304,23 +399,56 @@
       color: transparent;
     }
 
-    .vitoria p {
-      font-size: 1.15rem;
-      margin-bottom: 20px;
+    .modal p {
+      font-size: 1.05rem;
+      margin-bottom: 22px;
       font-weight: 700;
       color: #b0508b;
+      line-height: 1.5;
     }
+
+    .modal .estatisticas {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .modal .stat {
+      background: linear-gradient(135deg, #ffe0ec, #ffc2dd);
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: 700;
+      color: #a03d6e;
+      border: 2px solid #fff;
+      box-shadow: 0 4px 12px rgba(255, 111, 165, 0.25);
+      font-size: 0.9rem;
+    }
+
+    .modal .stat span {
+      display: block;
+      font-size: 1.4rem;
+      color: #d6336c;
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    .modal .botoes {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .modal button { font-size: 1rem; padding: 12px 26px; }
 
     @keyframes aparecer {
-      from { opacity: 0; transform: translateY(30px) scale(0.9); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
 
-    .escondido {
-      display: none !important;
-    }
+    .escondido { display: none !important; }
 
-    /* Rodapé fofinho */
     .rodape {
       margin-top: 30px;
       color: #b0508b;
@@ -334,37 +462,43 @@
       z-index: 2;
     }
 
-    /* Responsividade */
     @media (max-width: 1200px) {
-      .tabuleiro { grid-template-columns: repeat(8, 1fr); gap: 10px; }
-      .carta .face { font-size: 2.1rem; }
+      .tabuleiro.nivel-1, .tabuleiro.nivel-2 { grid-template-columns: repeat(6, minmax(0, 130px)); }
+      .tabuleiro.nivel-3 { grid-template-columns: repeat(6, minmax(0, 120px)); }
+      .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(8, minmax(0, 110px)); }
+      .carta .face { font-size: 2.2rem; }
     }
 
     @media (max-width: 900px) {
-      .tabuleiro { grid-template-columns: repeat(6, 1fr); gap: 9px; }
-      .carta .face { font-size: 1.9rem; }
-      h1 { font-size: 2.2rem; }
+      .tabuleiro.nivel-1, .tabuleiro.nivel-2 { grid-template-columns: repeat(5, minmax(0, 120px)); }
+      .tabuleiro.nivel-3, .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(6, minmax(0, 105px)); }
+      .carta .face { font-size: 2rem; }
+      h1 { font-size: 2.1rem; }
     }
 
     @media (max-width: 600px) {
-      .tabuleiro { grid-template-columns: repeat(5, 1fr); gap: 7px; }
-      .carta .face { font-size: 1.6rem; }
+      .tabuleiro.nivel-1, .tabuleiro.nivel-2 { grid-template-columns: repeat(4, minmax(0, 100px)); }
+      .tabuleiro.nivel-3, .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(5, minmax(0, 85px)); }
+      .carta .face { font-size: 1.7rem; }
       .carta .verso::after { font-size: 1.2rem; }
-      h1 { font-size: 1.7rem; }
-      .subtitulo { font-size: 0.9rem; }
-      .info, button { font-size: 0.85rem; padding: 7px 14px; }
+      h1 { font-size: 1.6rem; }
+      .subtitulo { font-size: 0.85rem; padding: 5px 16px; }
+      .info, button { font-size: 0.8rem; padding: 7px 13px; }
+      .nivel-badge { font-size: 0.8rem; padding: 6px 12px; }
+      .modal-conteudo { padding: 28px 24px; }
+      .modal h2 { font-size: 1.6rem; }
+      .modal-emoji { font-size: 3rem; }
     }
 
     @media (max-width: 400px) {
-      .tabuleiro { grid-template-columns: repeat(4, 1fr); gap: 5px; }
-      .carta .face { font-size: 1.3rem; }
-      .carta .verso::after { font-size: 1rem; }
+      .tabuleiro.nivel-1, .tabuleiro.nivel-2 { grid-template-columns: repeat(3, minmax(0, 90px)); }
+      .tabuleiro.nivel-3, .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(4, minmax(0, 75px)); }
+      .carta .face { font-size: 1.4rem; }
     }
   </style>
 </head>
-<body>
+<body class="nivel-1">
 
-  <!-- Corações flutuantes decorativos -->
   <div class="coracao" style="top: 10%; left: 5%;  animation-delay: 0s;">💖</div>
   <div class="coracao" style="top: 25%; right: 6%; animation-delay: 1s;">🌸</div>
   <div class="coracao" style="top: 60%; left: 3%;  animation-delay: 2s;">✨</div>
@@ -373,88 +507,150 @@
   <div class="coracao" style="top: 85%; left: 12%; animation-delay: 2.5s;">🌈</div>
 
   <div class="container">
-    <h1>🌸 Jogo da Memória Fofinho 🌸</h1>
-    <p class="subtitulo">💖 Encontre os 40 pares entre 80 cartinhas! 💖</p>
+    <h1>🌸 Jogo da Memória 🌸</h1>
+    <p class="subtitulo" id="subtitulo">💖 Nível 1 — Encontre os 9 pares! 💖</p>
+
+    <div class="barra-niveis" id="barraNiveis"></div>
 
     <div class="painel">
       <div class="info">🎯 Jogadas: <span id="jogadas">0</span></div>
-      <div class="info">💝 Pares: <span id="pares">0</span> / 40</div>
-      <button id="reiniciar">🔄 Reiniciar</button>
+      <div class="info">💝 Pares: <span id="pares">0</span> / <span id="totalPares">9</span></div>
+      <div class="info">⭐ Total: <span id="totalJogadas">0</span></div>
+      <button id="reiniciar">🔄 Reiniciar Nível</button>
     </div>
 
-    <div class="tabuleiro" id="tabuleiro"></div>
+    <div class="tabuleiro nivel-1" id="tabuleiro"></div>
 
-    <div class="vitoria escondido" id="vitoria">
-      <h2>🎉 Parabéns! 🎉</h2>
-      <p>Você encontrou todos os 40 pares em <strong id="totalJogadas">0</strong> jogadas! 💖</p>
-      <button id="jogarNovamente">🌈 Jogar Novamente</button>
+    <div class="rodape">💕 5 níveis • 9 → 45 pares • Feito com carinho 💕</div>
+  </div>
+
+  <div class="modal escondido" id="modal">
+    <div class="modal-conteudo">
+      <span class="modal-emoji" id="modalEmoji">🎉</span>
+      <h2 id="modalTitulo">Nível Concluído!</h2>
+      <p id="modalTexto">Você encontrou todos os pares!</p>
+
+      <div class="estatisticas">
+        <div class="stat">Jogadas<span id="modalJogadas">0</span></div>
+        <div class="stat">Pares<span id="modalPares">0</span></div>
+        <div class="stat">Nível<span id="modalNivel">1</span></div>
+      </div>
+
+      <div class="botoes">
+        <button class="roxo" id="btnProximo">➡️ Próximo Nível</button>
+        <button id="btnRepetirNivel">🔄 Repetir</button>
+      </div>
     </div>
+  </div>
 
-    <div class="rodape">💕 Feito com carinho • 80 cartas • 40 pares 💕</div>
+  <div class="modal escondido" id="modalFinal">
+    <div class="modal-conteudo">
+      <span class="modal-emoji">🏆</span>
+      <h2>Você Zerou o Jogo!</h2>
+      <p>Completou todos os 5 níveis! Você é demais! 💖</p>
+      <div class="estatisticas">
+        <div class="stat">Jogadas Totais<span id="finalJogadas">0</span></div>
+        <div class="stat">Níveis<span>5</span></div>
+        <div class="stat">Pares Totais<span>135</span></div>
+      </div>
+      <div class="botoes">
+        <button class="roxo" id="btnRecomecar">🌟 Jogar do Início</button>
+      </div>
+    </div>
   </div>
 
   <script>
     (function() {
-      // 40 animais com 40 cores diferentes!
+      const NIVEIS = [
+        { numero: 1, pares: 9,  nome: 'Primeiros Amigos',      emoji: '🌸', colunas: 'nivel-1' },
+        { numero: 2, pares: 18, nome: 'Explorando a Floresta', emoji: '🌿', colunas: 'nivel-2' },
+        { numero: 3, pares: 27, nome: 'Aventura no Zoo',       emoji: '🦁', colunas: 'nivel-3' },
+        { numero: 4, pares: 36, nome: 'Safári Selvagem',       emoji: '🐘', colunas: 'nivel-4' },
+        { numero: 5, pares: 45, nome: 'Reino dos Animais',     emoji: '👑', colunas: 'nivel-5' }
+      ];
+
+      // 45 animais — TODOS com emojis ANTIGOS e universalmente compatíveis
+      // (evitando os que viram quadrado: 🦥 🦦 🦨 🦩 🦢 🦚 🦝 🦔 🦎 🦈 🦋 🦜 🦓 🦒)
       const ANIMAIS = [
         { emoji: '🐶', nome: 'Cachorro',   cor: '#ff8fa3', corClara: '#ffd6e0' },
         { emoji: '🐱', nome: 'Gato',       cor: '#ff6fa5', corClara: '#ffc2dd' },
-        { emoji: '🦊', nome: 'Raposa',     cor: '#ff9f68', corClara: '#ffd9b8' },
-        { emoji: '🐼', nome: 'Panda',      cor: '#a8b8c8', corClara: '#dde7f0' },
-        { emoji: '🦁', nome: 'Leão',       cor: '#ffb84d', corClara: '#ffe4b5' },
-        { emoji: '🐸', nome: 'Sapo',       cor: '#7fd88f', corClara: '#c8f0cf' },
-        { emoji: '🐵', nome: 'Macaco',     cor: '#c09b7a', corClara: '#e8d5c4' },
-        { emoji: '🦉', nome: 'Coruja',     cor: '#b391e8', corClara: '#e0d3f7' },
-        { emoji: '🐯', nome: 'Tigre',      cor: '#ffa726', corClara: '#ffe0b2' },
-        { emoji: '🐨', nome: 'Coala',      cor: '#c2ced6', corClara: '#eef3f6' },
-        { emoji: '🐷', nome: 'Porco',      cor: '#ffb3d1', corClara: '#ffe0ec' },
-        { emoji: '🐔', nome: 'Galinha',    cor: '#ffe066', corClara: '#fff6cc' },
-        { emoji: '🐮', nome: 'Vaca',       cor: '#d9c2b0', corClara: '#f2e6da' },
-        { emoji: '🐴', nome: 'Cavalo',     cor: '#b8917a', corClara: '#e0cbb8' },
-        { emoji: '🐑', nome: 'Ovelha',     cor: '#e8e8e8', corClara: '#fafafa' },
-        { emoji: '🐘', nome: 'Elefante',   cor: '#b0b8c0', corClara: '#e0e6ea' },
-        { emoji: '🦒', nome: 'Girafa',     cor: '#ffd68f', corClara: '#ffefcc' },
-        { emoji: '🦓', nome: 'Zebra',      cor: '#8fa3b8', corClara: '#d4dfe9' },
-        { emoji: '🐻', nome: 'Urso',       cor: '#a87b5c', corClara: '#d9bfa8' },
-        { emoji: '🐰', nome: 'Coelho',     cor: '#ffc2dd', corClara: '#ffe6f0' },
         { emoji: '🐭', nome: 'Rato',       cor: '#c8c8c8', corClara: '#ececec' },
         { emoji: '🐹', nome: 'Hamster',    cor: '#ffb0a0', corClara: '#ffd9d1' },
-        { emoji: '🐺', nome: 'Lobo',       cor: '#7a94a8', corClara: '#c4d2dc' },
-        { emoji: '🦝', nome: 'Guaxinim',   cor: '#b8a89a', corClara: '#e0d5cb' },
-        { emoji: '🦔', nome: 'Ouriço',     cor: '#a0846c', corClara: '#d1bba8' },
+        { emoji: '🐰', nome: 'Coelho',     cor: '#ffc2dd', corClara: '#ffe6f0' },
+        { emoji: '🦊', nome: 'Raposa',     cor: '#ff9f68', corClara: '#ffd9b8' },
+        { emoji: '🐻', nome: 'Urso',       cor: '#a87b5c', corClara: '#d9bfa8' },
+        { emoji: '🐼', nome: 'Panda',      cor: '#a8b8c8', corClara: '#dde7f0' },
+        { emoji: '🐨', nome: 'Coala',      cor: '#c2ced6', corClara: '#eef3f6' },
+        { emoji: '🐯', nome: 'Tigre',      cor: '#ffa726', corClara: '#ffe0b2' },
+        { emoji: '🦁', nome: 'Leão',       cor: '#ffb84d', corClara: '#ffe4b5' },
+        { emoji: '🐮', nome: 'Vaca',       cor: '#d9c2b0', corClara: '#f2e6da' },
+        { emoji: '🐷', nome: 'Porco',      cor: '#ffb3d1', corClara: '#ffe0ec' },
+        { emoji: '🐸', nome: 'Sapo',       cor: '#7fd88f', corClara: '#c8f0cf' },
+        { emoji: '🐵', nome: 'Macaco',     cor: '#c09b7a', corClara: '#e8d5c4' },
+        { emoji: '🐔', nome: 'Galinha',    cor: '#ffe066', corClara: '#fff6cc' },
+        { emoji: '🐧', nome: 'Pinguim',    cor: '#6aa8d8', corClara: '#c2dcf0' },
+        { emoji: '🐦', nome: 'Pássaro',    cor: '#4ab0ee', corClara: '#b8dcf7' },
+        { emoji: '🐤', nome: 'Pintinho',   cor: '#ffdf66', corClara: '#fff4c2' },
+        { emoji: '🐴', nome: 'Cavalo',     cor: '#b8917a', corClara: '#e0cbb8' },
+        { emoji: '🐝', nome: 'Abelha',     cor: '#ffcf40', corClara: '#ffefb8' },
+        { emoji: '🐛', nome: 'Lagarta',    cor: '#8fd88f', corClara: '#ccf0cc' },
+        { emoji: '🐌', nome: 'Caracol',    cor: '#c8b088', corClara: '#e8d8b8' },
+        { emoji: '🐞', nome: 'Joaninha',   cor: '#f06060', corClara: '#ffc2c2' },
+        { emoji: '🐜', nome: 'Formiga',    cor: '#a08060', corClara: '#d8c0a8' },
+        { emoji: '🕷️', nome: 'Aranha',     cor: '#7a7a8a', corClara: '#c8c8d0' },
         { emoji: '🐢', nome: 'Tartaruga',  cor: '#7ed492', corClara: '#c8f0d1' },
         { emoji: '🐍', nome: 'Cobra',      cor: '#a8d86a', corClara: '#ddefc4' },
-        { emoji: '🦎', nome: 'Lagarto',    cor: '#bfe08c', corClara: '#e3f2c8' },
         { emoji: '🐙', nome: 'Polvo',      cor: '#ff7a7a', corClara: '#ffc9c9' },
         { emoji: '🦀', nome: 'Caranguejo', cor: '#ff5a5a', corClara: '#ffbcbc' },
         { emoji: '🐠', nome: 'Peixe',      cor: '#68c8f0', corClara: '#c2e8f8' },
         { emoji: '🐬', nome: 'Golfinho',   cor: '#4ab0ee', corClara: '#b8dcf7' },
         { emoji: '🐳', nome: 'Baleia',     cor: '#5a9aee', corClara: '#c2d8f8' },
-        { emoji: '🦈', nome: 'Tubarão',    cor: '#7a8ee0', corClara: '#ccd3f5' },
-        { emoji: '🦋', nome: 'Borboleta',  cor: '#cc8ae0', corClara: '#eaccf5' },
-        { emoji: '🐝', nome: 'Abelha',     cor: '#ffcf40', corClara: '#ffefb8' },
-        { emoji: '🐞', nome: 'Joaninha',   cor: '#f06060', corClara: '#ffc2c2' },
-        { emoji: '🦜', nome: 'Papagaio',   cor: '#4acfa0', corClara: '#bdeed9' },
-        { emoji: '🐧', nome: 'Pinguim',    cor: '#6aa8d8', corClara: '#c2dcf0' },
-        { emoji: '🦩', nome: 'Flamingo',   cor: '#ff9fc8', corClara: '#ffd6e8' }
+        { emoji: '🦆', nome: 'Pato',       cor: '#ffd68f', corClara: '#ffefcc' },
+        { emoji: '🦉', nome: 'Coruja',     cor: '#b391e8', corClara: '#e0d3f7' },
+        { emoji: '🦇', nome: 'Morcego',    cor: '#7a6aa8', corClara: '#c4b8e0' },
+        { emoji: '🐺', nome: 'Lobo',       cor: '#7a94a8', corClara: '#c4d2dc' },
+        { emoji: '🐗', nome: 'Javali',     cor: '#9a7a5a', corClara: '#d0bca0' },
+        { emoji: '🐫', nome: 'Camelo',     cor: '#d8b878', corClara: '#f0dcc0' },
+        { emoji: '🐘', nome: 'Elefante',   cor: '#b0b8c0', corClara: '#e0e6ea' },
+        { emoji: '🦏', nome: 'Rinoceronte',cor: '#8a9aa8', corClara: '#c8d4dc' },
+        { emoji: '🐊', nome: 'Jacaré',     cor: '#6aa860', corClara: '#b8d8b0' },
+        { emoji: '🐆', nome: 'Leopardo',   cor: '#e8a860', corClara: '#f8d8b0' },
+        { emoji: '🐄', nome: 'Boi',        cor: '#c8b8a0', corClara: '#e8dcd0' },
+        { emoji: '🐖', nome: 'Porquinho',  cor: '#ff9fc8', corClara: '#ffd6e8' }
       ];
 
-      const tabuleiro = document.getElementById('tabuleiro');
-      const jogadasEl = document.getElementById('jogadas');
-      const paresEl = document.getElementById('pares');
-      const vitoriaEl = document.getElementById('vitoria');
-      const totalJogadasEl = document.getElementById('totalJogadas');
-      const btnReiniciar = document.getElementById('reiniciar');
-      const btnJogarNovamente = document.getElementById('jogarNovamente');
-
+      let nivelAtual = 0;
+      let jogadas = 0;
+      let paresEncontrados = 0;
+      let totalJogadasGlobal = 0;
       let primeiraCarta = null;
       let segundaCarta = null;
       let bloqueado = false;
-      let jogadas = 0;
-      let paresEncontrados = 0;
-      const totalPares = ANIMAIS.length; // 40
+      let niveisCompletos = new Set();
 
-      paresEl.textContent = '0';
+      const body = document.body;
+      const tabuleiro = document.getElementById('tabuleiro');
+      const jogadasEl = document.getElementById('jogadas');
+      const paresEl = document.getElementById('pares');
+      const totalParesEl = document.getElementById('totalPares');
+      const totalJogadasEl = document.getElementById('totalJogadas');
+      const subtitulo = document.getElementById('subtitulo');
+      const barraNiveis = document.getElementById('barraNiveis');
+      const btnReiniciar = document.getElementById('reiniciar');
+
+      const modal = document.getElementById('modal');
+      const modalEmoji = document.getElementById('modalEmoji');
+      const modalTitulo = document.getElementById('modalTitulo');
+      const modalTexto = document.getElementById('modalTexto');
+      const modalJogadas = document.getElementById('modalJogadas');
+      const modalPares = document.getElementById('modalPares');
+      const modalNivel = document.getElementById('modalNivel');
+      const btnProximo = document.getElementById('btnProximo');
+      const btnRepetirNivel = document.getElementById('btnRepetirNivel');
+
+      const modalFinal = document.getElementById('modalFinal');
+      const finalJogadas = document.getElementById('finalJogadas');
+      const btnRecomecar = document.getElementById('btnRecomecar');
 
       function embaralhar(array) {
         const arr = [...array];
@@ -465,18 +661,38 @@
         return arr;
       }
 
-      function criarBaralho() {
+      function criarBaralho(qtdPares) {
+        const selecionados = embaralhar(ANIMAIS).slice(0, qtdPares);
         const baralho = [];
-        ANIMAIS.forEach((animal, index) => {
+        selecionados.forEach((animal, index) => {
           baralho.push({ ...animal, idPar: index });
           baralho.push({ ...animal, idPar: index });
         });
         return embaralhar(baralho);
       }
 
-      function renderizar() {
+      function renderizarBarraNiveis() {
+        barraNiveis.innerHTML = '';
+        NIVEIS.forEach((nivel, idx) => {
+          const badge = document.createElement('div');
+          badge.classList.add('nivel-badge');
+          badge.textContent = `${nivel.emoji} Nv ${nivel.numero}: ${nivel.pares} pares`;
+
+          if (idx === nivelAtual) badge.classList.add('atual');
+          if (niveisCompletos.has(idx)) badge.classList.add('completo');
+          if (idx > nivelAtual && !niveisCompletos.has(idx)) badge.classList.add('bloqueado');
+
+          barraNiveis.appendChild(badge);
+        });
+      }
+
+      function renderizarTabuleiro() {
         tabuleiro.innerHTML = '';
-        const baralho = criarBaralho();
+        const nivel = NIVEIS[nivelAtual];
+        const baralho = criarBaralho(nivel.pares);
+
+        tabuleiro.className = 'tabuleiro ' + nivel.colunas;
+        body.className = 'nivel-' + nivel.numero;
 
         baralho.forEach((carta) => {
           const div = document.createElement('div');
@@ -499,6 +715,15 @@
         });
       }
 
+      function atualizarPainel() {
+        const nivel = NIVEIS[nivelAtual];
+        jogadasEl.textContent = jogadas;
+        paresEl.textContent = paresEncontrados;
+        totalParesEl.textContent = nivel.pares;
+        totalJogadasEl.textContent = totalJogadasGlobal;
+        subtitulo.textContent = `${nivel.emoji} Nível ${nivel.numero} — ${nivel.nome} — Encontre os ${nivel.pares} pares! ${nivel.emoji}`;
+      }
+
       function virarCarta(carta) {
         if (bloqueado) return;
         if (carta.classList.contains('virada')) return;
@@ -515,7 +740,8 @@
         segundaCarta = carta;
         bloqueado = true;
         jogadas++;
-        jogadasEl.textContent = jogadas;
+        totalJogadasGlobal++;
+        atualizarPainel();
 
         verificarPar();
       }
@@ -529,12 +755,12 @@
             primeiraCarta.classList.add('encontrada');
             segundaCarta.classList.add('encontrada');
             paresEncontrados++;
-            paresEl.textContent = paresEncontrados;
-
+            atualizarPainel();
             resetarSelecao();
 
-            if (paresEncontrados === totalPares) {
-              finalizarJogo();
+            const nivel = NIVEIS[nivelAtual];
+            if (paresEncontrados === nivel.pares) {
+              completarNivel();
             }
           }, 350);
         } else {
@@ -554,29 +780,78 @@
         bloqueado = false;
       }
 
-      function finalizarJogo() {
-        totalJogadasEl.textContent = jogadas;
-        vitoriaEl.classList.remove('escondido');
-        vitoriaEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      function completarNivel() {
+        niveisCompletos.add(nivelAtual);
+        renderizarBarraNiveis();
+
+        const nivel = NIVEIS[nivelAtual];
+        const ultimoNivel = nivelAtual === NIVEIS.length - 1;
+
+        modalEmoji.textContent = ultimoNivel ? '👑' : '🎉';
+        modalTitulo.textContent = ultimoNivel
+          ? 'Último Nível Concluído!'
+          : `Nível ${nivel.numero} Concluído!`;
+        modalTexto.textContent = ultimoNivel
+          ? `Você chegou ao topo do ${nivel.nome}!`
+          : `Mandou bem no "${nivel.nome}"! Prepare-se para o próximo...`;
+
+        modalJogadas.textContent = jogadas;
+        modalPares.textContent = nivel.pares;
+        modalNivel.textContent = nivel.numero;
+
+        btnProximo.style.display = ultimoNivel ? 'none' : 'inline-block';
+
+        setTimeout(() => {
+          modal.classList.remove('escondido');
+        }, 500);
       }
 
-      function reiniciarJogo() {
+      function carregarNivel(idx) {
+        nivelAtual = idx;
+        jogadas = 0;
+        paresEncontrados = 0;
         primeiraCarta = null;
         segundaCarta = null;
         bloqueado = false;
-        jogadas = 0;
-        paresEncontrados = 0;
-        jogadasEl.textContent = '0';
-        paresEl.textContent = '0';
-        vitoriaEl.classList.add('escondido');
-        renderizar();
+
+        renderizarBarraNiveis();
+        renderizarTabuleiro();
+        atualizarPainel();
+      }
+
+      function proximoNivel() {
+        modal.classList.add('escondido');
+
+        if (nivelAtual < NIVEIS.length - 1) {
+          carregarNivel(nivelAtual + 1);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          finalJogadas.textContent = totalJogadasGlobal;
+          modalFinal.classList.remove('escondido');
+        }
+      }
+
+      function repetirNivel() {
+        modal.classList.add('escondido');
+        carregarNivel(nivelAtual);
+      }
+
+      function reiniciarJogo() {
+        totalJogadasGlobal = 0;
+        niveisCompletos.clear();
+        carregarNivel(0);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
-      btnReiniciar.addEventListener('click', reiniciarJogo);
-      btnJogarNovamente.addEventListener('click', reiniciarJogo);
+      btnReiniciar.addEventListener('click', repetirNivel);
+      btnProximo.addEventListener('click', proximoNivel);
+      btnRepetirNivel.addEventListener('click', repetirNivel);
+      btnRecomecar.addEventListener('click', () => {
+        modalFinal.classList.add('escondido');
+        reiniciarJogo();
+      });
 
-      renderizar();
+      carregarNivel(0);
     })();
   </script>
 </body>
