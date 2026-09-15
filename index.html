@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🌸 Jogo da Memória com Níveis</title>
+  <title>🌸✨ Jogo da Memória Mágico ✨🌸</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -24,11 +24,14 @@
     }
 
     body.nivel-1 { background: linear-gradient(135deg, #ffe0ec, #ffc8dd, #ffb3d1); }
-    body.nivel-2 { background: linear-gradient(135deg, #e0f0ff, #bde0fe, #a2d2ff); }
-    body.nivel-3 { background: linear-gradient(135deg, #e8ffe0, #c8f0c8, #a2e8a2); }
-    body.nivel-4 { background: linear-gradient(135deg, #fff0d0, #ffe0a2, #ffc966); }
-    body.nivel-5 { background: linear-gradient(135deg, #f0e0ff, #d8b8ff, #b088ff); }
+    body.nivel-2 { background: linear-gradient(135deg, #ffe8e0, #ffd0c8, #ffb8b0); }
+    body.nivel-3 { background: linear-gradient(135deg, #fff0d0, #ffe0a2, #ffc966); }
+    body.nivel-4 { background: linear-gradient(135deg, #e8ffe0, #c8f0c8, #a2e8a2); }
+    body.nivel-5 { background: linear-gradient(135deg, #e0f0ff, #bde0fe, #a2d2ff); }
+    body.nivel-6 { background: linear-gradient(135deg, #f0e0ff, #d8b8ff, #b088ff); }
+    body.nivel-7 { background: linear-gradient(135deg, #ffe0f0, #ffb8e0, #ff88c8); }
 
+    /* Nuvens decorativas */
     body::before,
     body::after {
       content: "";
@@ -42,18 +45,53 @@
     body::before { width: 400px; height: 400px; top: -100px; left: -100px; }
     body::after  { width: 500px; height: 500px; bottom: -150px; right: -150px; }
 
-    .coracao {
+    /* ============ DECORAÇÕES FLUTUANTES ============ */
+    .deco {
       position: fixed;
-      font-size: 1.5rem;
-      opacity: 0.4;
       pointer-events: none;
-      animation: flutuar 6s ease-in-out infinite;
       z-index: 1;
       font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+      animation: flutuar 6s ease-in-out infinite;
     }
     @keyframes flutuar {
       0%, 100% { transform: translateY(0) rotate(0deg); }
       50%      { transform: translateY(-25px) rotate(15deg); }
+    }
+    @keyframes girar {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes brilharEstrela {
+      0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+      50%      { opacity: 1; transform: scale(1.3) rotate(180deg); }
+    }
+
+    .estrela {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1;
+      font-size: 1rem;
+      animation: brilharEstrela 3s ease-in-out infinite;
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+    }
+
+    /* Arco-íris no topo */
+    .arcoiris-topo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(90deg,
+        #ff6fa5, #ff9f68, #ffd166, #7fd88f, #4ab0ee, #b391e8, #ff6fa5);
+      background-size: 200% 100%;
+      animation: arcoiris 4s linear infinite;
+      z-index: 3;
+      box-shadow: 0 2px 12px rgba(255, 111, 165, 0.4);
+    }
+    @keyframes arcoiris {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
     }
 
     .container {
@@ -62,19 +100,32 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      padding-top: 10px;
     }
 
+    /* ============ TÍTULO DECORADO ============ */
     h1 {
       font-family: 'Fredoka', sans-serif;
-      background: linear-gradient(90deg, #ff6fa5, #ff8fab, #c58bf2, #7cb3ff);
+      background: linear-gradient(90deg, #ff6fa5, #ff8fab, #c58bf2, #7cb3ff, #ff6fa5);
+      background-size: 200% auto;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      text-shadow: 3px 3px 0 rgba(255,255,255,0.7);
-      margin-bottom: 4px;
-      font-size: 2.6rem;
+      text-shadow: 3px 3px 0 rgba(255,255,255,0.8);
+      margin-bottom: 6px;
+      font-size: 2.8rem;
       text-align: center;
       letter-spacing: 1px;
+      animation: brilhoTitulo 3s linear infinite;
+      position: relative;
+    }
+    @keyframes brilhoTitulo {
+      to { background-position: 200% center; }
+    }
+
+    h1 .titulo-emoji {
+      display: inline-block;
+      animation: girar 4s linear infinite;
     }
 
     .subtitulo {
@@ -83,46 +134,71 @@
       font-size: 1rem;
       font-weight: 700;
       text-align: center;
-      background: rgba(255,255,255,0.6);
-      padding: 6px 22px;
+      background: rgba(255,255,255,0.75);
+      padding: 8px 24px;
       border-radius: 30px;
-      box-shadow: 0 4px 15px rgba(255, 111, 165, 0.2);
+      box-shadow: 0 4px 15px rgba(255, 111, 165, 0.25);
       border: 2px dashed #ffb3d1;
+      position: relative;
     }
+    .subtitulo::before,
+    .subtitulo::after {
+      content: "✨";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      animation: brilharEstrela 2s ease-in-out infinite;
+    }
+    .subtitulo::before { left: 8px; }
+    .subtitulo::after  { right: 8px; animation-delay: 1s; }
 
+    /* ============ BARRA DE NÍVEIS ============ */
     .barra-niveis {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 18px;
       flex-wrap: wrap;
       justify-content: center;
+      max-width: 950px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 30px;
+      border: 2px dashed #ffb3d1;
     }
 
     .nivel-badge {
       font-family: 'Fredoka', sans-serif;
-      padding: 8px 18px;
+      padding: 7px 14px;
       border-radius: 30px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       border: 3px solid #fff;
-      background: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.6);
       color: #a03d6e;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
       position: relative;
-      cursor: default;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .nivel-badge:hover:not(.atual) {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+      background: rgba(255,255,255,0.9);
     }
 
     .nivel-badge.atual {
       background: linear-gradient(135deg, #ff6fa5, #c58bf2);
       color: #fff;
-      transform: scale(1.1);
-      box-shadow: 0 6px 20px rgba(197, 139, 242, 0.5);
+      transform: scale(1.12);
+      box-shadow: 0 6px 20px rgba(197, 139, 242, 0.6);
       animation: pulinho 1.5s ease-in-out infinite;
     }
     @keyframes pulinho {
-      0%, 100% { transform: scale(1.1); }
-      50%      { transform: scale(1.15); }
+      0%, 100% { transform: scale(1.12); }
+      50%      { transform: scale(1.18); }
     }
 
     .nivel-badge.completo {
@@ -137,50 +213,50 @@
       right: -6px;
       background: #fff;
       color: #4acfa0;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: 900;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
-    .nivel-badge.bloqueado {
-      opacity: 0.45;
-      filter: grayscale(0.6);
-    }
-
+    /* ============ PAINEL DE STATUS ============ */
     .painel {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 22px;
       flex-wrap: wrap;
       justify-content: center;
       position: sticky;
-      top: 12px;
+      top: 18px;
       z-index: 20;
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(12px);
       padding: 12px 22px;
       border-radius: 50px;
       border: 3px solid #fff;
-      box-shadow: 0 8px 25px rgba(197, 139, 242, 0.3);
+      box-shadow: 0 8px 25px rgba(197, 139, 242, 0.35),
+                  inset 0 0 20px rgba(255, 179, 209, 0.2);
     }
 
     .info {
       background: linear-gradient(135deg, #ffd1e6, #ffb3d9);
       color: #a03d6e;
-      padding: 9px 20px;
+      padding: 9px 18px;
       border-radius: 30px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       border: 2px solid #fff;
       box-shadow: 0 4px 12px rgba(255, 111, 165, 0.25);
       white-space: nowrap;
       font-family: 'Fredoka', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .info span { color: #d6336c; }
@@ -190,33 +266,60 @@
       background: linear-gradient(135deg, #ffd166, #ffb703);
       color: #7a4a00;
       border: 2px solid #fff;
-      padding: 9px 22px;
+      padding: 9px 18px;
       border-radius: 30px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       cursor: pointer;
       transition: all 0.25s ease;
       box-shadow: 0 5px 15px rgba(255, 183, 3, 0.4);
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    button:hover {
+    button:hover:not(:disabled) {
       transform: translateY(-3px) scale(1.05);
       box-shadow: 0 8px 22px rgba(255, 183, 3, 0.6);
     }
 
-    button:active { transform: scale(0.97); }
+    button:active:not(:disabled) { transform: scale(0.97); }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+    }
 
     button.roxo {
       background: linear-gradient(135deg, #c58bf2, #9b5de5);
       color: #fff;
       box-shadow: 0 5px 15px rgba(155, 93, 229, 0.4);
     }
-
-    button.roxo:hover {
+    button.roxo:hover:not(:disabled) {
       box-shadow: 0 8px 22px rgba(155, 93, 229, 0.6);
     }
 
+    button.azul {
+      background: linear-gradient(135deg, #7cb3ff, #4a90e2);
+      color: #fff;
+      box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+    }
+    button.azul:hover:not(:disabled) {
+      box-shadow: 0 8px 22px rgba(74, 144, 226, 0.6);
+    }
+
+    button.verde {
+      background: linear-gradient(135deg, #7fd88f, #4acfa0);
+      color: #fff;
+      box-shadow: 0 5px 15px rgba(74, 207, 160, 0.4);
+    }
+    button.verde:hover:not(:disabled) {
+      box-shadow: 0 8px 22px rgba(74, 207, 160, 0.6);
+    }
+
+    /* ============ TABULEIRO ============ */
     .tabuleiro {
       display: grid;
       gap: 12px;
@@ -228,10 +331,12 @@
     }
 
     .tabuleiro.nivel-1 { grid-template-columns: repeat(6, minmax(0, 150px)); }
-    .tabuleiro.nivel-2 { grid-template-columns: repeat(6, minmax(0, 140px)); }
-    .tabuleiro.nivel-3 { grid-template-columns: repeat(8, minmax(0, 130px)); }
-    .tabuleiro.nivel-4 { grid-template-columns: repeat(10, minmax(0, 120px)); }
-    .tabuleiro.nivel-5 { grid-template-columns: repeat(10, minmax(0, 115px)); }
+    .tabuleiro.nivel-2 { grid-template-columns: repeat(6, minmax(0, 150px)); }
+    .tabuleiro.nivel-3 { grid-template-columns: repeat(6, minmax(0, 145px)); }
+    .tabuleiro.nivel-4 { grid-template-columns: repeat(7, minmax(0, 140px)); }
+    .tabuleiro.nivel-5 { grid-template-columns: repeat(7, minmax(0, 135px)); }
+    .tabuleiro.nivel-6 { grid-template-columns: repeat(8, minmax(0, 130px)); }
+    .tabuleiro.nivel-7 { grid-template-columns: repeat(8, minmax(0, 125px)); }
 
     .carta {
       aspect-ratio: 1 / 1;
@@ -239,13 +344,13 @@
       position: relative;
       transform-style: preserve-3d;
       transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
-      border-radius: 16px;
+      border-radius: 18px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     }
 
     .carta:hover:not(.virada):not(.encontrada) {
-      transform: translateY(-4px) scale(1.04);
-      box-shadow: 0 10px 22px rgba(197, 139, 242, 0.4);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 12px 25px rgba(197, 139, 242, 0.5);
     }
 
     .carta.virada { transform: rotateY(180deg); }
@@ -253,13 +358,12 @@
     .carta .face {
       position: absolute;
       inset: 0;
-      border-radius: 16px;
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      /* Fontes de emoji garantidas em todos os sistemas */
       font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji',
                    'EmojiOne Color', 'Android Emoji', 'Segoe UI Symbol', sans-serif;
       font-size: 2.6rem;
@@ -272,51 +376,74 @@
       transform: rotateY(180deg);
       border: 3px solid #fff;
       background: linear-gradient(145deg, var(--cor-clara), var(--cor));
-      box-shadow: inset 0 0 20px rgba(255,255,255,0.5), 0 0 0 3px rgba(255,255,255,0.4);
+      box-shadow: inset 0 0 20px rgba(255,255,255,0.5), 0 0 0 3px rgba(255,255,255,0.5);
       position: relative;
       overflow: hidden;
     }
 
+    /* Estrelinha girando no canto da frente */
     .carta .frente::before {
       content: "✨";
       position: absolute;
-      top: 3px;
-      right: 5px;
-      font-size: 0.7rem;
-      opacity: 0.9;
-      animation: brilhar 2s ease-in-out infinite;
+      top: 4px;
+      right: 6px;
+      font-size: 0.75rem;
+      opacity: 0.95;
+      animation: brilharEstrela 2s ease-in-out infinite;
     }
-    @keyframes brilhar {
-      0%, 100% { opacity: 0.4; transform: scale(1); }
-      50%      { opacity: 1; transform: scale(1.2); }
+
+    /* Coraçãozinho no canto inferior esquerdo */
+    .carta .frente::after {
+      content: "💖";
+      position: absolute;
+      bottom: 3px;
+      left: 5px;
+      font-size: 0.6rem;
+      opacity: 0.7;
     }
 
     .carta .verso {
       background:
-        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.25) 0%, transparent 40%),
-        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.25) 0%, transparent 40%),
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.3) 0%, transparent 40%),
+        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.3) 0%, transparent 40%),
         linear-gradient(145deg, #ff8fc7, #c58bf2 55%, #7cb3ff);
       border: 3px solid #fff;
-      box-shadow: inset 0 0 20px rgba(255,255,255,0.35);
+      box-shadow: inset 0 0 20px rgba(255,255,255,0.4);
       position: relative;
+      overflow: hidden;
+    }
+
+    /* Padrão de bolinhas no verso */
+    .carta .verso::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.4) 1.5px, transparent 1.5px),
+        radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
+      background-size: 18px 18px, 12px 12px;
+      background-position: 0 0, 6px 6px;
+      opacity: 0.7;
     }
 
     .carta .verso::after {
       content: "🐾";
       font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
-      font-size: 1.8rem;
-      opacity: 0.9;
-      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+      font-size: 1.9rem;
+      opacity: 0.95;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
       animation: balancar 3s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
     }
     @keyframes balancar {
-      0%, 100% { transform: rotate(-8deg); }
-      50%      { transform: rotate(8deg); }
+      0%, 100% { transform: rotate(-10deg); }
+      50%      { transform: rotate(10deg); }
     }
 
     .carta.encontrada .frente {
       border: 4px solid #fff;
-      box-shadow: 0 0 25px rgba(255,255,255,1), 0 0 40px var(--cor), inset 0 0 25px rgba(255,255,255,0.8);
+      box-shadow: 0 0 25px rgba(255,255,255,1), 0 0 45px var(--cor), inset 0 0 25px rgba(255,255,255,0.8);
       animation: pulse 0.8s ease;
     }
 
@@ -326,16 +453,17 @@
       content: "💖";
       font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
       position: absolute;
-      top: -8px;
-      right: -8px;
-      font-size: 1.3rem;
+      top: -10px;
+      right: -10px;
+      font-size: 1.5rem;
       animation: pop 0.6s ease;
       z-index: 5;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     }
     @keyframes pop {
-      0%   { transform: scale(0); }
-      70%  { transform: scale(1.4); }
-      100% { transform: scale(1); }
+      0%   { transform: scale(0) rotate(0deg); }
+      70%  { transform: scale(1.5) rotate(20deg); }
+      100% { transform: scale(1) rotate(0deg); }
     }
 
     @keyframes pulse {
@@ -346,11 +474,12 @@
 
     .tabuleiro.bloqueado .carta:not(.encontrada) { pointer-events: none; }
 
+    /* ============ MODAIS ============ */
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(60, 20, 80, 0.5);
-      backdrop-filter: blur(6px);
+      background: rgba(60, 20, 80, 0.55);
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -361,37 +490,54 @@
 
     .modal-conteudo {
       text-align: center;
-      background: #fff;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255,179,209,0.3) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(124,179,255,0.3) 0%, transparent 40%),
+        #fff;
       padding: 40px 50px;
       border-radius: 32px;
       border: 5px dashed #ffb3d1;
-      box-shadow: 0 20px 60px rgba(197, 139, 242, 0.5);
-      max-width: 480px;
+      box-shadow: 0 20px 60px rgba(197, 139, 242, 0.5),
+                  inset 0 0 40px rgba(255, 179, 209, 0.15);
+      max-width: 500px;
       width: 100%;
       animation: bounce-in 0.5s ease;
+      position: relative;
+    }
+
+    /* Fita decorativa no topo do modal */
+    .modal-conteudo::before {
+      content: "🎀";
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2.5rem;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));
     }
 
     @keyframes bounce-in {
-      0%   { transform: scale(0.5); opacity: 0; }
-      60%  { transform: scale(1.08); opacity: 1; }
-      100% { transform: scale(1); }
+      0%   { transform: scale(0.5) rotate(-8deg); opacity: 0; }
+      60%  { transform: scale(1.08) rotate(2deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); }
     }
 
     .modal-emoji {
       font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
-      font-size: 4rem;
+      font-size: 4.5rem;
       margin-bottom: 10px;
       display: block;
       animation: girar 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 4px 10px rgba(255, 111, 165, 0.4));
     }
     @keyframes girar {
-      0%, 100% { transform: rotate(-10deg); }
-      50%      { transform: rotate(10deg); }
+      0%, 100% { transform: rotate(-12deg) scale(1); }
+      50%      { transform: rotate(12deg) scale(1.1); }
     }
 
     .modal h2 {
       font-family: 'Fredoka', sans-serif;
-      font-size: 2rem;
+      font-size: 2.1rem;
       margin-bottom: 10px;
       background: linear-gradient(90deg, #ff6fa5, #c58bf2, #7cb3ff);
       -webkit-background-clip: text;
@@ -424,11 +570,12 @@
       border: 2px solid #fff;
       box-shadow: 0 4px 12px rgba(255, 111, 165, 0.25);
       font-size: 0.9rem;
+      min-width: 80px;
     }
 
     .modal .stat span {
       display: block;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       color: #d6336c;
       font-family: 'Fredoka', sans-serif;
     }
@@ -440,7 +587,7 @@
       flex-wrap: wrap;
     }
 
-    .modal button { font-size: 1rem; padding: 12px 26px; }
+    .modal button { font-size: 1rem; padding: 12px 24px; }
 
     @keyframes aparecer {
       from { opacity: 0; }
@@ -454,24 +601,29 @@
       color: #b0508b;
       font-weight: 700;
       font-size: 0.9rem;
-      background: rgba(255,255,255,0.6);
-      padding: 8px 22px;
+      background: rgba(255,255,255,0.7);
+      padding: 10px 24px;
       border-radius: 30px;
       border: 2px dashed #ffb3d1;
       position: relative;
       z-index: 2;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(255, 111, 165, 0.15);
     }
 
+    /* ============ RESPONSIVIDADE ============ */
     @media (max-width: 1200px) {
       .tabuleiro.nivel-1, .tabuleiro.nivel-2 { grid-template-columns: repeat(6, minmax(0, 130px)); }
-      .tabuleiro.nivel-3 { grid-template-columns: repeat(6, minmax(0, 120px)); }
-      .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(8, minmax(0, 110px)); }
+      .tabuleiro.nivel-3 { grid-template-columns: repeat(6, minmax(0, 125px)); }
+      .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(6, minmax(0, 115px)); }
+      .tabuleiro.nivel-6, .tabuleiro.nivel-7 { grid-template-columns: repeat(7, minmax(0, 110px)); }
       .carta .face { font-size: 2.2rem; }
     }
 
     @media (max-width: 900px) {
       .tabuleiro.nivel-1, .tabuleiro.nivel-2 { grid-template-columns: repeat(5, minmax(0, 120px)); }
-      .tabuleiro.nivel-3, .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(6, minmax(0, 105px)); }
+      .tabuleiro.nivel-3, .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(6, minmax(0, 100px)); }
+      .tabuleiro.nivel-6, .tabuleiro.nivel-7 { grid-template-columns: repeat(6, minmax(0, 95px)); }
       .carta .face { font-size: 2rem; }
       h1 { font-size: 2.1rem; }
     }
@@ -479,51 +631,73 @@
     @media (max-width: 600px) {
       .tabuleiro.nivel-1, .tabuleiro.nivel-2 { grid-template-columns: repeat(4, minmax(0, 100px)); }
       .tabuleiro.nivel-3, .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(5, minmax(0, 85px)); }
+      .tabuleiro.nivel-6, .tabuleiro.nivel-7 { grid-template-columns: repeat(5, minmax(0, 80px)); }
       .carta .face { font-size: 1.7rem; }
-      .carta .verso::after { font-size: 1.2rem; }
+      .carta .verso::after { font-size: 1.3rem; }
       h1 { font-size: 1.6rem; }
-      .subtitulo { font-size: 0.85rem; padding: 5px 16px; }
-      .info, button { font-size: 0.8rem; padding: 7px 13px; }
-      .nivel-badge { font-size: 0.8rem; padding: 6px 12px; }
-      .modal-conteudo { padding: 28px 24px; }
-      .modal h2 { font-size: 1.6rem; }
+      .subtitulo { font-size: 0.85rem; padding: 6px 16px; }
+      .info, button { font-size: 0.75rem; padding: 7px 11px; }
+      .nivel-badge { font-size: 0.72rem; padding: 5px 10px; }
+      .modal-conteudo { padding: 28px 22px; }
+      .modal h2 { font-size: 1.5rem; }
       .modal-emoji { font-size: 3rem; }
+      .modal-conteudo::before { font-size: 2rem; top: -16px; }
     }
 
     @media (max-width: 400px) {
       .tabuleiro.nivel-1, .tabuleiro.nivel-2 { grid-template-columns: repeat(3, minmax(0, 90px)); }
-      .tabuleiro.nivel-3, .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(4, minmax(0, 75px)); }
+      .tabuleiro.nivel-3, .tabuleiro.nivel-4, .tabuleiro.nivel-5 { grid-template-columns: repeat(4, minmax(0, 78px)); }
+      .tabuleiro.nivel-6, .tabuleiro.nivel-7 { grid-template-columns: repeat(4, minmax(0, 72px)); }
       .carta .face { font-size: 1.4rem; }
     }
   </style>
 </head>
 <body class="nivel-1">
 
-  <div class="coracao" style="top: 10%; left: 5%;  animation-delay: 0s;">💖</div>
-  <div class="coracao" style="top: 25%; right: 6%; animation-delay: 1s;">🌸</div>
-  <div class="coracao" style="top: 60%; left: 3%;  animation-delay: 2s;">✨</div>
-  <div class="coracao" style="top: 75%; right: 4%; animation-delay: 1.5s;">💕</div>
-  <div class="coracao" style="top: 45%; left: 8%;  animation-delay: 3s;">⭐</div>
-  <div class="coracao" style="top: 85%; left: 12%; animation-delay: 2.5s;">🌈</div>
+  <!-- Arco-íris decorativo no topo -->
+  <div class="arcoiris-topo"></div>
+
+  <!-- Decorações flutuantes -->
+  <div class="deco" style="top: 8%;  left: 4%;  font-size: 1.8rem; animation-delay: 0s;">💖</div>
+  <div class="deco" style="top: 22%; right: 5%; font-size: 1.6rem; animation-delay: 1s;">🌸</div>
+  <div class="deco" style="top: 55%; left: 2%;  font-size: 1.7rem; animation-delay: 2s;">✨</div>
+  <div class="deco" style="top: 72%; right: 3%; font-size: 1.9rem; animation-delay: 1.5s;">💕</div>
+  <div class="deco" style="top: 40%; left: 6%;  font-size: 1.5rem; animation-delay: 3s;">⭐</div>
+  <div class="deco" style="top: 85%; left: 10%; font-size: 1.6rem; animation-delay: 2.5s;">🌈</div>
+  <div class="deco" style="top: 15%; right: 12%; font-size: 1.4rem; animation-delay: 0.5s;">🎀</div>
+  <div class="deco" style="top: 92%; right: 8%;  font-size: 1.5rem; animation-delay: 3.5s;">🧸</div>
+  <div class="deco" style="top: 50%; right: 10%; font-size: 1.3rem; animation-delay: 4s;">🌟</div>
+
+  <!-- Estrelinhas cintilantes espalhadas -->
+  <div class="estrela" style="top: 12%; left: 25%; animation-delay: 0s;">✨</div>
+  <div class="estrela" style="top: 30%; left: 45%; animation-delay: 0.7s;">⭐</div>
+  <div class="estrela" style="top: 65%; left: 15%; animation-delay: 1.4s;">✨</div>
+  <div class="estrela" style="top: 48%; right: 20%; animation-delay: 2.1s;">⭐</div>
+  <div class="estrela" style="top: 78%; left: 55%; animation-delay: 2.8s;">✨</div>
+  <div class="estrela" style="top: 20%; right: 30%; animation-delay: 3.5s;">⭐</div>
+  <div class="estrela" style="top: 88%; right: 25%; animation-delay: 1.8s;">✨</div>
 
   <div class="container">
-    <h1>🌸 Jogo da Memória 🌸</h1>
-    <p class="subtitulo" id="subtitulo">💖 Nível 1 — Encontre os 9 pares! 💖</p>
+    <h1><span class="titulo-emoji">🌸</span> Jogo da Memória Mágico <span class="titulo-emoji">🌸</span></h1>
+    <p class="subtitulo" id="subtitulo">💖 Nível 1 — Encontre os 6 pares! 💖</p>
 
     <div class="barra-niveis" id="barraNiveis"></div>
 
     <div class="painel">
-      <div class="info">🎯 Jogadas: <span id="jogadas">0</span></div>
-      <div class="info">💝 Pares: <span id="pares">0</span> / <span id="totalPares">9</span></div>
-      <div class="info">⭐ Total: <span id="totalJogadas">0</span></div>
-      <button id="reiniciar">🔄 Reiniciar Nível</button>
+      <div class="info">🎯 <span id="jogadas">0</span></div>
+      <div class="info">💝 <span id="pares">0</span> / <span id="totalPares">6</span></div>
+      <div class="info">⭐ <span id="totalJogadas">0</span></div>
+      <button class="verde" id="voltarNivel" title="Voltar um nível">⏮️ Voltar</button>
+      <button class="azul"  id="pularNivel" title="Pular para o próximo nível">⏭️ Pular</button>
+      <button class="roxo"  id="reiniciar" title="Reiniciar o nível atual">🔄 Reiniciar</button>
     </div>
 
     <div class="tabuleiro nivel-1" id="tabuleiro"></div>
 
-    <div class="rodape">💕 5 níveis • 9 → 45 pares • Feito com carinho 💕</div>
+    <div class="rodape" id="rodape">💕 7 níveis • 6 → 24 pares • Progressão suave 💕</div>
   </div>
 
+  <!-- MODAL de vitória de nível -->
   <div class="modal escondido" id="modal">
     <div class="modal-conteudo">
       <span class="modal-emoji" id="modalEmoji">🎉</span>
@@ -543,15 +717,16 @@
     </div>
   </div>
 
+  <!-- MODAL final -->
   <div class="modal escondido" id="modalFinal">
     <div class="modal-conteudo">
       <span class="modal-emoji">🏆</span>
       <h2>Você Zerou o Jogo!</h2>
-      <p>Completou todos os 5 níveis! Você é demais! 💖</p>
+      <p>Completou todos os 7 níveis! Você é demais! 💖</p>
       <div class="estatisticas">
-        <div class="stat">Jogadas Totais<span id="finalJogadas">0</span></div>
-        <div class="stat">Níveis<span>5</span></div>
-        <div class="stat">Pares Totais<span>135</span></div>
+        <div class="stat">Jogadas<span id="finalJogadas">0</span></div>
+        <div class="stat">Níveis<span>7</span></div>
+        <div class="stat">Pares<span id="finalPares">120</span></div>
       </div>
       <div class="botoes">
         <button class="roxo" id="btnRecomecar">🌟 Jogar do Início</button>
@@ -561,16 +736,17 @@
 
   <script>
     (function() {
+      // ============ CONFIGURAÇÃO DOS NÍVEIS ============
       const NIVEIS = [
-        { numero: 1, pares: 9,  nome: 'Primeiros Amigos',      emoji: '🌸', colunas: 'nivel-1' },
-        { numero: 2, pares: 18, nome: 'Explorando a Floresta', emoji: '🌿', colunas: 'nivel-2' },
-        { numero: 3, pares: 27, nome: 'Aventura no Zoo',       emoji: '🦁', colunas: 'nivel-3' },
-        { numero: 4, pares: 36, nome: 'Safári Selvagem',       emoji: '🐘', colunas: 'nivel-4' },
-        { numero: 5, pares: 45, nome: 'Reino dos Animais',     emoji: '👑', colunas: 'nivel-5' }
+        { numero: 1, pares: 6,  nome: 'Primeiros Amigos',      emoji: '🌸', colunas: 'nivel-1' },
+        { numero: 2, pares: 9,  nome: 'Explorando a Floresta', emoji: '🌿', colunas: 'nivel-2' },
+        { numero: 3, pares: 12, nome: 'Aventura no Zoo',       emoji: '🦁', colunas: 'nivel-3' },
+        { numero: 4, pares: 15, nome: 'Safári Selvagem',       emoji: '🐘', colunas: 'nivel-4' },
+        { numero: 5, pares: 18, nome: 'Mundo Selvagem',        emoji: '🌍', colunas: 'nivel-5' },
+        { numero: 6, pares: 21, nome: 'Reino dos Animais',     emoji: '👑', colunas: 'nivel-6' },
+        { numero: 7, pares: 24, nome: 'Lenda Animal',          emoji: '🏆', colunas: 'nivel-7' }
       ];
 
-      // 45 animais — TODOS com emojis ANTIGOS e universalmente compatíveis
-      // (evitando os que viram quadrado: 🦥 🦦 🦨 🦩 🦢 🦚 🦝 🦔 🦎 🦈 🦋 🦜 🦓 🦒)
       const ANIMAIS = [
         { emoji: '🐶', nome: 'Cachorro',   cor: '#ff8fa3', corClara: '#ffd6e0' },
         { emoji: '🐱', nome: 'Gato',       cor: '#ff6fa5', corClara: '#ffc2dd' },
@@ -593,30 +769,9 @@
         { emoji: '🐤', nome: 'Pintinho',   cor: '#ffdf66', corClara: '#fff4c2' },
         { emoji: '🐴', nome: 'Cavalo',     cor: '#b8917a', corClara: '#e0cbb8' },
         { emoji: '🐝', nome: 'Abelha',     cor: '#ffcf40', corClara: '#ffefb8' },
-        { emoji: '🐛', nome: 'Lagarta',    cor: '#8fd88f', corClara: '#ccf0cc' },
-        { emoji: '🐌', nome: 'Caracol',    cor: '#c8b088', corClara: '#e8d8b8' },
-        { emoji: '🐞', nome: 'Joaninha',   cor: '#f06060', corClara: '#ffc2c2' },
-        { emoji: '🐜', nome: 'Formiga',    cor: '#a08060', corClara: '#d8c0a8' },
-        { emoji: '🕷️', nome: 'Aranha',     cor: '#7a7a8a', corClara: '#c8c8d0' },
         { emoji: '🐢', nome: 'Tartaruga',  cor: '#7ed492', corClara: '#c8f0d1' },
         { emoji: '🐍', nome: 'Cobra',      cor: '#a8d86a', corClara: '#ddefc4' },
-        { emoji: '🐙', nome: 'Polvo',      cor: '#ff7a7a', corClara: '#ffc9c9' },
-        { emoji: '🦀', nome: 'Caranguejo', cor: '#ff5a5a', corClara: '#ffbcbc' },
-        { emoji: '🐠', nome: 'Peixe',      cor: '#68c8f0', corClara: '#c2e8f8' },
-        { emoji: '🐬', nome: 'Golfinho',   cor: '#4ab0ee', corClara: '#b8dcf7' },
-        { emoji: '🐳', nome: 'Baleia',     cor: '#5a9aee', corClara: '#c2d8f8' },
-        { emoji: '🦆', nome: 'Pato',       cor: '#ffd68f', corClara: '#ffefcc' },
-        { emoji: '🦉', nome: 'Coruja',     cor: '#b391e8', corClara: '#e0d3f7' },
-        { emoji: '🦇', nome: 'Morcego',    cor: '#7a6aa8', corClara: '#c4b8e0' },
-        { emoji: '🐺', nome: 'Lobo',       cor: '#7a94a8', corClara: '#c4d2dc' },
-        { emoji: '🐗', nome: 'Javali',     cor: '#9a7a5a', corClara: '#d0bca0' },
-        { emoji: '🐫', nome: 'Camelo',     cor: '#d8b878', corClara: '#f0dcc0' },
-        { emoji: '🐘', nome: 'Elefante',   cor: '#b0b8c0', corClara: '#e0e6ea' },
-        { emoji: '🦏', nome: 'Rinoceronte',cor: '#8a9aa8', corClara: '#c8d4dc' },
-        { emoji: '🐊', nome: 'Jacaré',     cor: '#6aa860', corClara: '#b8d8b0' },
-        { emoji: '🐆', nome: 'Leopardo',   cor: '#e8a860', corClara: '#f8d8b0' },
-        { emoji: '🐄', nome: 'Boi',        cor: '#c8b8a0', corClara: '#e8dcd0' },
-        { emoji: '🐖', nome: 'Porquinho',  cor: '#ff9fc8', corClara: '#ffd6e8' }
+        { emoji: '🐙', nome: 'Polvo',      cor: '#ff7a7a', corClara: '#ffc9c9' }
       ];
 
       let nivelAtual = 0;
@@ -627,6 +782,7 @@
       let segundaCarta = null;
       let bloqueado = false;
       let niveisCompletos = new Set();
+      let pulandoNivel = false;
 
       const body = document.body;
       const tabuleiro = document.getElementById('tabuleiro');
@@ -637,6 +793,9 @@
       const subtitulo = document.getElementById('subtitulo');
       const barraNiveis = document.getElementById('barraNiveis');
       const btnReiniciar = document.getElementById('reiniciar');
+      const btnPularNivel = document.getElementById('pularNivel');
+      const btnVoltarNivel = document.getElementById('voltarNivel');
+      const rodape = document.getElementById('rodape');
 
       const modal = document.getElementById('modal');
       const modalEmoji = document.getElementById('modalEmoji');
@@ -650,7 +809,12 @@
 
       const modalFinal = document.getElementById('modalFinal');
       const finalJogadas = document.getElementById('finalJogadas');
+      const finalPares = document.getElementById('finalPares');
       const btnRecomecar = document.getElementById('btnRecomecar');
+
+      const totalParesJogo = NIVEIS.reduce((acc, n) => acc + n.pares, 0);
+      rodape.textContent = `💕 ${NIVEIS.length} níveis • ${NIVEIS[0].pares} → ${NIVEIS[NIVEIS.length-1].pares} pares • Progressão suave 💕`;
+      finalPares.textContent = totalParesJogo;
 
       function embaralhar(array) {
         const arr = [...array];
@@ -676,11 +840,17 @@
         NIVEIS.forEach((nivel, idx) => {
           const badge = document.createElement('div');
           badge.classList.add('nivel-badge');
-          badge.textContent = `${nivel.emoji} Nv ${nivel.numero}: ${nivel.pares} pares`;
+          badge.textContent = `${nivel.emoji} Nv ${nivel.numero}: ${nivel.pares}p`;
 
           if (idx === nivelAtual) badge.classList.add('atual');
           if (niveisCompletos.has(idx)) badge.classList.add('completo');
-          if (idx > nivelAtual && !niveisCompletos.has(idx)) badge.classList.add('bloqueado');
+
+          badge.addEventListener('click', () => {
+            if (idx !== nivelAtual) {
+              carregarNivel(idx);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          });
 
           barraNiveis.appendChild(badge);
         });
@@ -722,6 +892,12 @@
         totalParesEl.textContent = nivel.pares;
         totalJogadasEl.textContent = totalJogadasGlobal;
         subtitulo.textContent = `${nivel.emoji} Nível ${nivel.numero} — ${nivel.nome} — Encontre os ${nivel.pares} pares! ${nivel.emoji}`;
+
+        // Botão pular: escondido no último nível
+        btnPularNivel.style.display = (nivelAtual === NIVEIS.length - 1) ? 'none' : 'inline-flex';
+
+        // Botão voltar: desabilitado no primeiro nível
+        btnVoltarNivel.disabled = (nivelAtual === 0);
       }
 
       function virarCarta(carta) {
@@ -759,7 +935,7 @@
             resetarSelecao();
 
             const nivel = NIVEIS[nivelAtual];
-            if (paresEncontrados === nivel.pares) {
+            if (paresEncontrados === nivel.pares && !pulandoNivel) {
               completarNivel();
             }
           }, 350);
@@ -799,7 +975,7 @@
         modalPares.textContent = nivel.pares;
         modalNivel.textContent = nivel.numero;
 
-        btnProximo.style.display = ultimoNivel ? 'none' : 'inline-block';
+        btnProximo.style.display = ultimoNivel ? 'none' : 'inline-flex';
 
         setTimeout(() => {
           modal.classList.remove('escondido');
@@ -813,6 +989,7 @@
         primeiraCarta = null;
         segundaCarta = null;
         bloqueado = false;
+        pulandoNivel = false;
 
         renderizarBarraNiveis();
         renderizarTabuleiro();
@@ -831,6 +1008,27 @@
         }
       }
 
+      // ============ PULAR NÍVEL ============
+      function pularNivel() {
+        if (nivelAtual < NIVEIS.length - 1) {
+          pulandoNivel = true;
+          carregarNivel(nivelAtual + 1);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          finalJogadas.textContent = totalJogadasGlobal;
+          modalFinal.classList.remove('escondido');
+        }
+      }
+
+      // ============ VOLTAR NÍVEL ============
+      function voltarNivel() {
+        if (nivelAtual > 0) {
+          pulandoNivel = true;
+          carregarNivel(nivelAtual - 1);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+
       function repetirNivel() {
         modal.classList.add('escondido');
         carregarNivel(nivelAtual);
@@ -844,6 +1042,8 @@
       }
 
       btnReiniciar.addEventListener('click', repetirNivel);
+      btnVoltarNivel.addEventListener('click', voltarNivel);
+      btnPularNivel.addEventListener('click', pularNivel);
       btnProximo.addEventListener('click', proximoNivel);
       btnRepetirNivel.addEventListener('click', repetirNivel);
       btnRecomecar.addEventListener('click', () => {
